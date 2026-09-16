@@ -1,25 +1,29 @@
-/* ===== Hero com scroll-scrub (canvas) ===== */
-
+/* ==========================================================================
+   18. SCROLL CINEMA (Hero) — canvas controlado pelo scroll, sem autoplay
+   ========================================================================== */
 .cena-scroll {
   position: relative;
-  height: 300vh; /* controla a "duração" do scroll do efeito */
+  height: 300vh; /* controla quanto scroll "alimenta" os 144 frames */
 }
 
 .cena-sticky {
   position: sticky;
   top: 0;
   height: 100vh;
-  width: 100%;
+  min-height: 340px;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  color: #fff;
 }
 
-.cena-video {           /* agora é o canvas */
+.cena-video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
-  background: var(--dark, #08203A);
+  background: var(--dark);
   display: block;
 }
 
@@ -27,35 +31,58 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(
-    180deg,
-    rgba(8, 32, 58, 0.75) 0%,
-    rgba(8, 32, 58, 0.55) 50%,
-    rgba(8, 32, 58, 0.85) 100%
-  );
+  background: linear-gradient(90deg, rgba(8,32,58,.94), rgba(8,32,58,.72) 55%, rgba(8,32,58,.28));
 }
 
-.hero-inner {
+/* usa a mesma .hero-inner da seção 5 — sem redeclarar tipografia aqui */
+.cena-sticky .hero-inner {
   position: relative;
   z-index: 2;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  color: #fff;
 }
 
-/* Fallback: reduced motion / mobile — sem scrub, imagem estática */
-@media (prefers-reduced-motion: reduce), (max-width: 720px) {
+/* indicador sutil de scroll (opcional) */
+.cena-scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.cena-scroll-hint::after {
+  content: "";
+  width: 1px;
+  height: 26px;
+  background: rgba(255,255,255,.55);
+  animation: cenaHintMove 1.8s ease-in-out infinite;
+}
+@keyframes cenaHintMove {
+  0%, 100% { transform: scaleY(1); opacity: .4; }
+  50%      { transform: scaleY(.4); opacity: 1; }
+}
+
+/* Fallback: mobile e prefers-reduced-motion — hero estático (sem scrub) */
+@media (max-width: 720px), (prefers-reduced-motion: reduce) {
   .cena-scroll {
-    height: 100vh;
+    height: auto;
   }
   .cena-sticky {
     position: relative;
+    height: auto;
+    min-height: 340px;
+    padding: 40px 0;
   }
   .cena-video {
     background-image: url('images/frame_001.jpg');
     background-size: cover;
     background-position: center;
   }
+  .cena-scroll-hint { display: none; }
 }
